@@ -31,15 +31,13 @@ export default function Calculator() {
 
   const deviceId = localStorage.getItem("deviceId");
 
-  // 1. ИЗОЛИРОВАННЫЙ useEffect (никаких внешних зависимостей)
   useEffect(() => {
-    let isMounted = true; // Защита от каскадных рендеров
+    let isMounted = true;
 
     const loadHistory = async () => {
       if (!deviceId) return;
       try {
         const res = await axios.get(`${API_URL}/api/history/${deviceId}`);
-        // Обновляем стейт только если компонент всё ещё существует на экране
         if (isMounted) {
           setHistory(res.data);
         }
@@ -50,11 +48,10 @@ export default function Calculator() {
 
     loadHistory();
 
-    // Функция очистки при размонтировании
     return () => {
       isMounted = false;
     };
-  }, [deviceId]); // Зависит ТОЛЬКО от deviceId, линтер будет счастлив
+  }, [deviceId]);
 
   const handleChange = (e) => {
     setInputs({ ...inputs, [e.target.name]: e.target.value });
@@ -70,7 +67,6 @@ export default function Calculator() {
       const res = await axios.post(`${API_URL}/api/calculate`, payload);
       setChartData(res.data.chartData);
 
-      // 2. Обновляем историю напрямую, не используя внешние функции
       if (deviceId) {
         const histRes = await axios.get(`${API_URL}/api/history/${deviceId}`);
         setHistory(histRes.data);
@@ -92,17 +88,17 @@ export default function Calculator() {
   return (
     <div className={styles.calcPage}>
       <header className={styles.header}>
-        <h2>Прогнозирование Капитала</h2>
+        <h2>Прогнозування Капіталу</h2>
       </header>
 
       {error && <div className={styles.errorBanner}>{error}</div>}
 
       <div className={styles.grid}>
-        {/* ЛЕВАЯ КОЛОНКА - ФОРМА */}
+        {/* ЛІВА КОЛОНКА - ФОРМА */}
         <div className={styles.card}>
           <form onSubmit={handleCalculate} className={styles.form}>
             <div className={styles.inputGroup}>
-              <label>Начальный капитал ($)</label>
+              <label>Початковий капітал ($)</label>
               <input
                 type="number"
                 name="initial"
@@ -112,7 +108,7 @@ export default function Calculator() {
               />
             </div>
             <div className={styles.inputGroup}>
-              <label>Ежемесячное пополнение ($)</label>
+              <label>Щомісячне поповнення ($)</label>
               <input
                 type="number"
                 name="monthly"
@@ -122,7 +118,7 @@ export default function Calculator() {
               />
             </div>
             <div className={styles.inputGroup}>
-              <label>Ожидаемая доходность (%)</label>
+              <label>Очікувана дохідність (%)</label>
               <input
                 type="number"
                 name="expectedReturn"
@@ -132,7 +128,7 @@ export default function Calculator() {
               />
             </div>
             <div className={styles.inputGroup}>
-              <label>Волатильность (Риск) (%)</label>
+              <label>Волатильність (Ризик) (%)</label>
               <input
                 type="number"
                 name="volatility"
@@ -142,7 +138,7 @@ export default function Calculator() {
               />
             </div>
             <div className={styles.inputGroup}>
-              <label>Инфляция (%)</label>
+              <label>Інфляція (%)</label>
               <input
                 type="number"
                 name="inflation"
@@ -153,7 +149,7 @@ export default function Calculator() {
               />
             </div>
             <div className={styles.inputGroup}>
-              <label>Срок (лет)</label>
+              <label>Термін (років)</label>
               <input
                 type="number"
                 name="years"
@@ -164,17 +160,17 @@ export default function Calculator() {
               />
             </div>
             <button type="submit" disabled={loading} className={styles.btnCalc}>
-              {loading ? "Считаем..." : "Рассчитать модель"}
+              {loading ? "Рахуємо..." : "Розрахувати модель"}
             </button>
           </form>
         </div>
 
-        {/* ПРАВАЯ КОЛОНКА - ГРАФИК */}
+        {/* ПРАВА КОЛОНКА - ГРАФІК */}
         <div className={styles.card}>
           {chartData.length > 0 ? (
             <div className={styles.chartContainer}>
               <h3 className={styles.chartTitle}>
-                Коридор вероятностей (с учетом инфляции)
+                Коридор ймовірностей (з урахуванням інфляції)
               </h3>
               <ResponsiveContainer width="100%" height={350}>
                 <LineChart
@@ -186,15 +182,16 @@ export default function Calculator() {
                   <YAxis
                     tickFormatter={(val) => `$${val / 1000}k`}
                     tick={{ fill: "#795548" }}
+                    width={80}
                   />
                   <Tooltip
                     formatter={(value) => formatCurrency(value)}
-                    labelFormatter={(label) => `Год: ${label}`}
+                    labelFormatter={(label) => `Рік: ${label}`}
                   />
                   <Legend />
                   <Line
                     type="monotone"
-                    name="Оптимистичный (90%)"
+                    name="Оптимістичний (90%)"
                     dataKey="bestCase"
                     stroke="#4CAF50"
                     strokeWidth={2}
@@ -202,7 +199,7 @@ export default function Calculator() {
                   />
                   <Line
                     type="monotone"
-                    name="Медианный (50%)"
+                    name="Медіанний (50%)"
                     dataKey="median"
                     stroke="#1976D2"
                     strokeWidth={3}
@@ -210,7 +207,7 @@ export default function Calculator() {
                   />
                   <Line
                     type="monotone"
-                    name="Пессимистичный (10%)"
+                    name="Песимістичний (10%)"
                     dataKey="worstCase"
                     stroke="#D32F2F"
                     strokeWidth={2}
@@ -220,7 +217,7 @@ export default function Calculator() {
               </ResponsiveContainer>
               <div className={styles.summaryValues}>
                 <div>
-                  Итог (Медиана):{" "}
+                  Підсумок (Медіана):{" "}
                   <strong>
                     {formatCurrency(chartData[chartData.length - 1].median)}
                   </strong>
@@ -229,33 +226,33 @@ export default function Calculator() {
             </div>
           ) : (
             <div className={styles.emptyState}>
-              Заполните форму и нажмите "Рассчитать"
+              Заповніть форму та натисніть "Розрахувати модель"
             </div>
           )}
         </div>
       </div>
 
-      {/* НИЖНЯЯ ЧАСТЬ - ИСТОРИЯ */}
+      {/* НИЖНЯ ЧАСТИНА - ІСТОРІЯ */}
       <div className={styles.historySection}>
-        <h3>История ваших расчетов</h3>
+        <h3>Історія ваших розрахунків</h3>
         {history.length === 0 ? (
-          <p className={styles.textMuted}>Вы еще не делали прогнозов</p>
+          <p className={styles.textMuted}>Ви ще не робили прогнозів</p>
         ) : (
           <div className={styles.historyList}>
             {history.map((item) => (
               <div key={item._id} className={styles.historyCard}>
                 <div>
-                  <strong>Сумма:</strong> {formatCurrency(item.inputs.initial)}
+                  <strong>Сума:</strong> {formatCurrency(item.inputs.initial)}
                 </div>
                 <div>
-                  <strong>Срок:</strong> {item.inputs.years} лет
+                  <strong>Термін:</strong> {item.inputs.years} років
                 </div>
                 <div>
-                  <strong>Итог (Медиана):</strong>{" "}
+                  <strong>Підсумок (Медіана):</strong>{" "}
                   {formatCurrency(item.summary.median)}
                 </div>
                 <div className={styles.date}>
-                  {new Date(item.createdAt).toLocaleString("ru-RU")}
+                  {new Date(item.createdAt).toLocaleString("uk-UA")}
                 </div>
               </div>
             ))}
