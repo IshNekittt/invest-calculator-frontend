@@ -137,6 +137,19 @@
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   gap: 1rem;
 }
+
+@media screen and (max-width: 365px) {
+  .historyList {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  }
+}
+
+@media screen and (max-width: 320px) {
+  .historyList {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  }
+}
+
 .historyCard {
   background: var(--bg-cream);
   padding: 1rem;
