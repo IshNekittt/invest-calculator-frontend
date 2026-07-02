@@ -51,7 +51,12 @@ export default function Calculator() {
   }, [deviceId]);
 
   const handleChange = (e) => {
-    setInputs({ ...inputs, [e.target.name]: e.target.value });
+    const { name, valueAsNumber } = e.target;
+
+    setInputs({
+      ...inputs,
+      [name]: isNaN(valueAsNumber) ? "" : valueAsNumber,
+    });
   };
 
   const handleCalculate = async (e) => {
