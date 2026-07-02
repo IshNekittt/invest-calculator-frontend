@@ -1,26 +1,33 @@
-# React + Vite
+# 📊 Investment Calculator UI (Monte Carlo & GBM)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A Single Page Application (SPA) for visualizing stochastic financial calculations based on Geometric Brownian Motion.
 
-Currently, two official plugins are available:
+### 🛠 Tech Stack & Libraries
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- **React 19 & Vite** — Core framework and bundler.
+- **Recharts** — Data visualization (probability corridors).
+- **Axios** — REST API requests.
+- **React Router v6** — Client-side routing.
+- **UUID** — Shadow authentication (stores a unique `deviceId` in LocalStorage).
 
-## React Compiler
+### 📂 Project Structure
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- `src/pages/Home` — Landing page with the academic background of the mathematical model.
+- `src/pages/Calculator` — Main UI combining the input form, interactive `Recharts` line chart, and real-time history feed.
+- Fully responsive design using modern CSS Modules and Flexbox/Grid layouts.
 
-## Expanding the ESLint configuration
+```text
+src/
+ ├── components/
+ ├── pages/
+ │   ├── Home/
+ │   └── Calculator/
+ ├── App.jsx
+ └── index.css
+```
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### 🚀 Scripts
 
-frontend/
-├── src/
-│ ├── App.jsx
-│ ├── main.jsx
-│ ├── pages/
-│ │ ├── Home.jsx // Лендинг с манускриптом
-│ │ └── Calculator.jsx // Калькулятор с графиком
-│ └── components/
-│ └── MathExplanation.jsx
+- `npm install` — Install dependencies.
+- `npm run dev` — Start the local development server.
+- `npm run build` — Build the app for production.
