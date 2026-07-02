@@ -1,0 +1,33 @@
+/* Reset */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+html,
+body {
+  width: 100%;
+  min-height: 100vh;
+  font-family:
+    "Inter",
+    system-ui,
+    -apple-system,
+    sans-serif;
+}
+/* Variables */
+:root {
+  --bg-cream: #fdfbf7;
+  --text-dark: #3e2723;
+  --text-muted: #795548;
+  --accent-brown: #8d6e63;
+  --btn-bg: #5d4037;
+  --btn-hover: #4e342e;
+  --card-bg: #ffffff;
+  --error-color: #d32f2f;
+}
+body {
+  background-color: var(--bg-cream);
+  color: var(--text-dark);
+}
