@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { ArrowLeft } from "lucide-react";
 import axios from "axios";
 import {
   LineChart,
@@ -33,21 +35,16 @@ export default function Calculator() {
 
   useEffect(() => {
     let isMounted = true;
-
     const loadHistory = async () => {
       if (!deviceId) return;
       try {
         const res = await axios.get(`${API_URL}/api/history/${deviceId}`);
-        if (isMounted) {
-          setHistory(res.data);
-        }
+        if (isMounted) setHistory(res.data);
       } catch (err) {
         console.error("Не вдалося завантажити історію", err);
       }
     };
-
     loadHistory();
-
     return () => {
       isMounted = false;
     };
@@ -60,8 +57,20 @@ export default function Calculator() {
   const handleCalculate = async (e) => {
     e.preventDefault();
     setError(null);
-    setLoading(true);
 
+    // JS-валідація (захист від мінусових значень)
+    if (inputs.initial < 0 || inputs.monthly < 0 || inputs.years <= 0) {
+      setError(
+        "Значення капіталу та терміну не можуть бути від'ємними або нульовими!",
+      );
+      return;
+    }
+    if (inputs.years > 50) {
+      setError("Максимальний термін розрахунку - 50 років.");
+      return;
+    }
+
+    setLoading(true);
     try {
       const payload = { deviceId, inputs };
       const res = await axios.post(`${API_URL}/api/calculate`, payload);
@@ -87,6 +96,12 @@ export default function Calculator() {
 
   return (
     <div className={styles.calcPage}>
+      {/* Кнопка НАЗАД */}
+      <Link to="/" className={styles.backButton}>
+        <ArrowLeft size={24} />
+        <span>Назад до опису моделі</span>
+      </Link>
+
       <header className={styles.header}>
         <h2>Прогнозування Капіталу</h2>
       </header>
@@ -104,6 +119,7 @@ export default function Calculator() {
                 name="initial"
                 value={inputs.initial}
                 onChange={handleChange}
+                min="0"
                 required
               />
             </div>
@@ -114,6 +130,7 @@ export default function Calculator() {
                 name="monthly"
                 value={inputs.monthly}
                 onChange={handleChange}
+                min="0"
                 required
               />
             </div>
@@ -134,6 +151,7 @@ export default function Calculator() {
                 name="volatility"
                 value={inputs.volatility}
                 onChange={handleChange}
+                min="0"
                 required
               />
             </div>
@@ -155,6 +173,7 @@ export default function Calculator() {
                 name="years"
                 value={inputs.years}
                 onChange={handleChange}
+                min="1"
                 max="50"
                 required
               />
@@ -172,49 +191,52 @@ export default function Calculator() {
               <h3 className={styles.chartTitle}>
                 Коридор ймовірностей (з урахуванням інфляції)
               </h3>
-              <ResponsiveContainer width="100%" height={350}>
-                <LineChart
-                  data={chartData}
-                  margin={{ top: 5, right: 20, bottom: 5, left: 0 }}
-                >
-                  <CartesianGrid strokeDasharray="3 3" opacity={0.5} />
-                  <XAxis dataKey="year" tick={{ fill: "#795548" }} />
-                  <YAxis
-                    tickFormatter={(val) => `$${val / 1000}k`}
-                    tick={{ fill: "#795548" }}
-                    width={80}
-                  />
-                  <Tooltip
-                    formatter={(value) => formatCurrency(value)}
-                    labelFormatter={(label) => `Рік: ${label}`}
-                  />
-                  <Legend />
-                  <Line
-                    type="monotone"
-                    name="Оптимістичний (90%)"
-                    dataKey="bestCase"
-                    stroke="#4CAF50"
-                    strokeWidth={2}
-                    dot={false}
-                  />
-                  <Line
-                    type="monotone"
-                    name="Медіанний (50%)"
-                    dataKey="median"
-                    stroke="#1976D2"
-                    strokeWidth={3}
-                    dot={false}
-                  />
-                  <Line
-                    type="monotone"
-                    name="Песимістичний (10%)"
-                    dataKey="worstCase"
-                    stroke="#D32F2F"
-                    strokeWidth={2}
-                    dot={false}
-                  />
-                </LineChart>
-              </ResponsiveContainer>
+              {/* Висота 100% для розтягування по контейнеру */}
+              <div style={{ flex: 1, minHeight: "350px" }}>
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart
+                    data={chartData}
+                    margin={{ top: 5, right: 20, bottom: 5, left: 0 }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" opacity={0.5} />
+                    <XAxis dataKey="year" tick={{ fill: "#795548" }} />
+                    <YAxis
+                      tickFormatter={(val) => `$${val / 1000}k`}
+                      tick={{ fill: "#795548" }}
+                      width={80}
+                    />
+                    <Tooltip
+                      formatter={(value) => formatCurrency(value)}
+                      labelFormatter={(label) => `Рік: ${label}`}
+                    />
+                    <Legend />
+                    <Line
+                      type="monotone"
+                      name="Оптимістичний (90%)"
+                      dataKey="bestCase"
+                      stroke="#4CAF50"
+                      strokeWidth={2}
+                      dot={false}
+                    />
+                    <Line
+                      type="monotone"
+                      name="Медіанний (50%)"
+                      dataKey="median"
+                      stroke="#1976D2"
+                      strokeWidth={3}
+                      dot={false}
+                    />
+                    <Line
+                      type="monotone"
+                      name="Песимістичний (10%)"
+                      dataKey="worstCase"
+                      stroke="#D32F2F"
+                      strokeWidth={2}
+                      dot={false}
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
               <div className={styles.summaryValues}>
                 <div>
                   Підсумок (Медіана):{" "}
