@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import axios from "axios";
@@ -17,6 +17,8 @@ import styles from "./Calculator.module.css";
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 export default function Calculator() {
+  const lastCalculatedInputs = useRef(null);
+
   const [inputs, setInputs] = useState({
     initial: 10000,
     monthly: 500,
@@ -63,7 +65,19 @@ export default function Calculator() {
     e.preventDefault();
     setError(null);
 
-    // JS-валідація (захист від мінусових значень)
+    const hasEmptyFields = Object.values(inputs).some((val) => val === "");
+    if (hasEmptyFields) {
+      setError("Будь ласка, заповніть усі поля перед розрахунком.");
+      return;
+    }
+
+    if (
+      lastCalculatedInputs.current &&
+      JSON.stringify(lastCalculatedInputs.current) === JSON.stringify(inputs)
+    ) {
+      return;
+    }
+
     if (inputs.initial < 0 || inputs.monthly < 0 || inputs.years <= 0) {
       setError(
         "Значення капіталу та терміну не можуть бути від'ємними або нульовими!",
@@ -80,6 +94,8 @@ export default function Calculator() {
       const payload = { deviceId, inputs };
       const res = await axios.post(`${API_URL}/api/calculate`, payload);
       setChartData(res.data.chartData);
+
+      lastCalculatedInputs.current = { ...inputs };
 
       if (deviceId) {
         const histRes = await axios.get(`${API_URL}/api/history/${deviceId}`);
