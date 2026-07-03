@@ -10,6 +10,9 @@ html,
 body {
   width: 100%;
   min-height: 100vh;
+  background-color: var(--bg-cream);
+  background-image: url("data:image/svg+xml,%3Csvg width='250' height='250' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%238d6e63' fill-opacity='0.25' stroke='%238d6e63' stroke-opacity='0.25'%3E%3Cpath d='M30 25 h10 v-10 h5 v10 h10 v5 h-10 v10 h-5 v-10 h-10 z' stroke='none'/%3E%3Ccircle cx='180' cy='40' r='8' fill='none' stroke-width='3'/%3E%3Cpath d='M100 180 l12 -20 l12 20 z' fill='none' stroke-width='3'/%3E%3Ccircle cx='220' cy='150' r='3' stroke='none'/%3E%3Ccircle cx='50' cy='120' r='2' stroke='none'/%3E%3Ccircle cx='140' cy='90' r='4' stroke='none'/%3E%3Cpath d='M200 200 l10 10 m0 -10 l-10 10' fill='none' stroke-width='3'/%3E%3Cpath d='M20 200 l10 -10 l10 10 l10 -10' fill='none' stroke-width='3'/%3E%3C/g%3E%3C/svg%3E");
+  color: var(--text-dark);
   font-family:
     "Inter",
     system-ui,

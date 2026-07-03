@@ -1,15 +1,21 @@
 .backButton {
   display: inline-flex;
+  justify-content: center;
   align-items: center;
-  gap: 0.5rem;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
   color: var(--btn-bg);
   text-decoration: none;
-  font-weight: 600;
   margin-bottom: 1rem;
-  transition: color 0.3s ease;
+  transition: all 0.3s ease;
+}
+.backButton span {
+  display: none;
 }
 .backButton:hover {
-  color: var(--btn-hover);
+  background-color: rgba(93, 64, 55, 0.1);
+  transform: scale(1.05);
 }
 .calcPage {
   padding: 2rem;
@@ -45,7 +51,8 @@
   background: var(--card-bg);
   padding: 1.5rem;
   border-radius: 12px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 12px 35px rgba(141, 110, 99, 0.15);
+  border: 1px solid rgba(141, 110, 99, 0.1);
   display: flex;
   flex-direction: column;
 }
@@ -107,6 +114,29 @@
   margin-bottom: 1rem;
   color: var(--text-dark);
 }
+/* Плавний ефект дихання (без стрибків координат) */
+@keyframes breathingGlow {
+  0% {
+    box-shadow: 0 8px 20px rgba(141, 110, 99, 0.15);
+  }
+  50% {
+    box-shadow: 0 8px 45px rgba(141, 110, 99, 0.55);
+  } /* Робимо світіння яскравішим */
+  100% {
+    box-shadow: 0 8px 20px rgba(141, 110, 99, 0.15);
+  }
+}
+
+.chartContainerCard {
+  background: var(--card-bg);
+  padding: 1.5rem;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  /* Зменшив час до 4 секунд, щоб дихання було динамічнішим */
+  animation: breathingGlow 4s infinite ease-in-out;
+  border: 1px solid rgba(141, 110, 99, 0.2);
+}
 .chartContainer {
   flex: 1;
   display: flex;
@@ -132,34 +162,54 @@
 .textMuted {
   color: var(--text-muted);
 }
+
 .historyList {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.5rem;
 }
-
-@media screen and (max-width: 365px) {
+@media screen and (max-width: 400px) {
   .historyList {
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  }
-}
-
-@media screen and (max-width: 320px) {
-  .historyList {
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    grid-template-columns: 1fr;
   }
 }
 
 .historyCard {
-  background: var(--bg-cream);
-  padding: 1rem;
-  border-radius: 8px;
-  border: 1px solid #eee;
+  background: var(--card-bg);
+  padding: 1.2rem;
+  border-radius: 12px;
+  border-left: 4px solid var(--accent-brown);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
   font-size: 0.9rem;
-  line-height: 1.5;
+  line-height: 1.6;
+  transition: transform 0.2s;
+}
+.historyCard:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+}
+.historySectionTitle {
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin: 10px 0 5px 0;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 3px;
+}
+.historyRow {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+.historyHighlight {
+  color: var(--btn-bg);
+  font-size: 1.05rem;
+  font-weight: 700;
 }
 .date {
-  margin-top: 0.5rem;
+  margin-top: 1rem;
   font-size: 0.8rem;
   color: #999;
+  text-align: right;
 }

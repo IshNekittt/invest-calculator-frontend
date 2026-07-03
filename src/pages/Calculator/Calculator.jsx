@@ -117,14 +117,14 @@ export default function Calculator() {
 
   return (
     <div className={styles.calcPage}>
-      {/* Кнопка НАЗАД */}
-      <Link to="/" className={styles.backButton}>
-        <ArrowLeft size={24} />
-        <span>Назад до опису моделі</span>
+      {/* Оновлена кнопка НАЗАД */}
+      <Link to="/" className={styles.backButton} title="Повернутися назад">
+        <ArrowLeft size={28} />
+        <span>Назад</span>
       </Link>
 
       <header className={styles.header}>
-        <h2>Прогнозування Капіталу</h2>
+        <h2>Стохастичне Прогнозування (GBM)</h2>
       </header>
 
       {error && <div className={styles.errorBanner}>{error}</div>}
@@ -200,19 +200,18 @@ export default function Calculator() {
               />
             </div>
             <button type="submit" disabled={loading} className={styles.btnCalc}>
-              {loading ? "Рахуємо..." : "Розрахувати модель"}
+              {loading ? "Аналізуємо матрицю..." : "Запустити симуляцію"}
             </button>
           </form>
         </div>
 
-        {/* ПРАВА КОЛОНКА - ГРАФІК */}
-        <div className={styles.card}>
+        {/* ПРАВА КОЛОНКА - ГРАФІК (Тепер з ефектом дихання) */}
+        <div className={styles.chartContainerCard}>
           {chartData.length > 0 ? (
             <div className={styles.chartContainer}>
               <h3 className={styles.chartTitle}>
-                Коридор ймовірностей (з урахуванням інфляції)
+                Коридор ймовірностей (з дисконтуванням)
               </h3>
-              {/* Висота 100% для розтягування по контейнеру */}
               <div style={{ flex: 1, minHeight: "350px" }}>
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart
@@ -258,42 +257,74 @@ export default function Calculator() {
                   </LineChart>
                 </ResponsiveContainer>
               </div>
-              <div className={styles.summaryValues}>
-                <div>
-                  Підсумок (Медіана):{" "}
-                  <strong>
-                    {formatCurrency(chartData[chartData.length - 1].median)}
-                  </strong>
-                </div>
-              </div>
             </div>
           ) : (
             <div className={styles.emptyState}>
-              Заповніть форму та натисніть "Розрахувати модель"
+              Заповніть форму та запустіть симуляцію алгоритму
             </div>
           )}
         </div>
       </div>
 
-      {/* НИЖНЯ ЧАСТИНА - ІСТОРІЯ */}
+      {/* НИЖНЯ ЧАСТИНА - РОЗШИРЕНА ІСТОРІЯ */}
       <div className={styles.historySection}>
-        <h3>Історія ваших розрахунків</h3>
+        <h3>Аналітичний архів симуляцій</h3>
         {history.length === 0 ? (
-          <p className={styles.textMuted}>Ви ще не робили прогнозів</p>
+          <p className={styles.textMuted}>
+            Архів порожній. Зробіть перший розрахунок.
+          </p>
         ) : (
           <div className={styles.historyList}>
             {history.map((item) => (
               <div key={item._id} className={styles.historyCard}>
-                <div>
-                  <strong>Сума:</strong> {formatCurrency(item.inputs.initial)}
+                <div className={styles.historySectionTitle}>
+                  Вхідні параметри
                 </div>
-                <div>
-                  <strong>Термін:</strong> {item.inputs.years} років
+                <div className={styles.historyRow}>
+                  <span>Капітал:</span>{" "}
+                  <strong>{formatCurrency(item.inputs.initial)}</strong>
                 </div>
-                <div>
-                  <strong>Підсумок (Медіана):</strong>{" "}
-                  {formatCurrency(item.summary.median)}
+                <div className={styles.historyRow}>
+                  <span>Щомісяця:</span>{" "}
+                  <strong>{formatCurrency(item.inputs.monthly)}</strong>
                 </div>
+                <div className={styles.historyRow}>
+                  <span>Термін:</span>{" "}
+                  <strong>{item.inputs.years} років</strong>
+                </div>
+                <div className={styles.historyRow}>
+                  <span>Волатильність / Інфляція:</span>{" "}
+                  <strong>
+                    {item.inputs.volatility}% / {item.inputs.inflation}%
+                  </strong>
+                </div>
+
+                <div className={styles.historySectionTitle}>Результати GBM</div>
+                {/* Показуємо ці дані тільки якщо вони є в БД (щоб старі розрахунки не зламали верстку) */}
+                {item.summary.totalInvested && (
+                  <div className={styles.historyRow}>
+                    <span>Всього проінвестовано:</span>{" "}
+                    <strong>
+                      {formatCurrency(item.summary.totalInvested)}
+                    </strong>
+                  </div>
+                )}
+                <div className={styles.historyRow}>
+                  <span>Песимістичний сценарій:</span>{" "}
+                  <strong>{formatCurrency(item.summary.worstCase)}</strong>
+                </div>
+                <div className={styles.historyRow}>
+                  <span>Оптимістичний сценарій:</span>{" "}
+                  <strong>{formatCurrency(item.summary.bestCase)}</strong>
+                </div>
+
+                <div className={styles.historyRow} style={{ marginTop: "8px" }}>
+                  <span>Медіанний підсумок:</span>
+                  <span className={styles.historyHighlight}>
+                    {formatCurrency(item.summary.median)}
+                  </span>
+                </div>
+
                 <div className={styles.date}>
                   {new Date(item.createdAt).toLocaleString("uk-UA")}
                 </div>

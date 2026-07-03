@@ -4,18 +4,14 @@
   align-items: center;
   min-height: 100vh;
   padding: 2rem;
-  background-image: radial-gradient(
-    circle at 10% 20%,
-    rgb(240, 235, 225) 0%,
-    var(--bg-cream) 90%
-  );
 }
 .content {
   max-width: 800px;
   background: var(--card-bg);
   padding: 3rem;
   border-radius: 12px;
-  box-shadow: 0 10px 30px rgba(62, 39, 35, 0.05);
+  box-shadow: 0 12px 35px rgba(141, 110, 99, 0.15);
+  border: 1px solid rgba(141, 110, 99, 0.1);
   text-align: center;
 }
 .title {
