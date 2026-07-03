@@ -124,7 +124,7 @@ export default function Calculator() {
       </Link>
 
       <header className={styles.header}>
-        <h2>Стохастичне Прогнозування (GBM)</h2>
+        <h2>Стохастичне Прогнозування</h2>
       </header>
 
       {error && <div className={styles.errorBanner}>{error}</div>}
