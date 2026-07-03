@@ -293,6 +293,10 @@ export default function Calculator() {
                   <strong>{item.inputs.years} років</strong>
                 </div>
                 <div className={styles.historyRow}>
+                  <span>Очікувана дохідність:</span>{" "}
+                  <strong>{item.inputs.expectedReturn}%</strong>
+                </div>
+                <div className={styles.historyRow}>
                   <span>Волатильність / Інфляція:</span>{" "}
                   <strong>
                     {item.inputs.volatility}% / {item.inputs.inflation}%
